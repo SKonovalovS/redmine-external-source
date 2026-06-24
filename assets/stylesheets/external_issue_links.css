@@ -1,0 +1,20 @@
+#external-issue-links { margin-top: 16px; }
+#external-issue-links h3 { margin: 0; }
+.external-issue-links-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
+.external-issue-links-tools { display: flex; align-items: center; gap: 10px; }
+.external-issue-links-search { max-width: 260px; }
+#external-issue-links table.list td,
+#external-issue-links table.list th { vertical-align: middle; }
+#external-issue-links td.source-name { white-space: nowrap; }
+#external-issue-links td.external-url { white-space: nowrap; }
+#external-issue-links td.buttons { text-align: right; white-space: nowrap; width: 90px; }
+.external-source-icon { width: 16px; height: 16px; margin-right: 6px; vertical-align: text-bottom; }
+.external-issue-links-form { margin-top: 12px; }
+.external-issue-links-form p { margin: 6px 0; }
+.external-issue-links-form label { display: inline-block; width: 120px; font-weight: bold; }
+.external-issue-links-copy { border: 0; background: transparent; cursor: pointer; margin-left: 4px; color: #169; }
+.external-issue-links-drag-column { width: 22px; }
+.external-issue-links-drag-handle { cursor: move; color: #777; text-align: center; width: 22px; }
+.external-issue-link-dragging { opacity: .55; }
+.external-favicon-preview { width: 16px; height: 16px; margin-left: 6px; vertical-align: text-bottom; }
+.external-issue-links-settings-example { margin-left: 180px; max-width: 520px; }

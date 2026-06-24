@@ -1,0 +1,13 @@
+<p>
+  <label><%= l(:label_external_issue_links_custom_sources) %></label>
+  <%= text_area_tag 'settings[custom_sources]', @settings['custom_sources'], rows: 12, cols: 80 %>
+</p>
+<p class="info">
+  <%= l(:text_external_issue_links_custom_sources_help) %>
+</p>
+<pre class="external-issue-links-settings-example">- key: sharepoint
+  label: SharePoint
+  icon: external.svg
+- key: support_portal
+  label: Support Portal
+  icon: external.svg</pre>
