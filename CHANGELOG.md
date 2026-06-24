@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.0.2 - 2026-06-24
+
+- Reworked issue page UI to look like native Redmine sections instead of a boxed panel.
+- Removed external source search field from the issue page.
+- Removed empty-state notification when no external sources are added.
+- Moved the add external source action directly under the section heading.
+- Added client-side positioning after the native subtasks block when it is present.
+- Fixed drag & drop sorting URL: removed `.json` suffix to avoid Redmine API Basic Auth popup in browser sessions.
+- Removed API auth handling from the browser-only `sort` action.
+- Improved sorting response for XHR requests: returns `200 OK` without redirect.
+
 ## 1.0.1 - 2026-06-24
 
 - Fixed Redmine 5.0.x issue hook rendering: use `@issue` instead of unavailable `context`.

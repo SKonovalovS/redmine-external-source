@@ -5,16 +5,14 @@
   <% links = issue.external_issue_links.order(:position, :id) %>
   <% can_manage = User.current.allowed_to?(:manage_external_issue_links, project) %>
 
-  <div id="external-issue-links" class="box external-issue-links" data-sort-url="<%= sort_issue_external_issue_links_path(issue, format: :json) %>">
-    <div class="external-issue-links-header">
-      <h3><%= l(:label_external_issue_links) %></h3>
-      <div class="external-issue-links-tools">
-        <input type="search" class="external-issue-links-search" placeholder="<%= l(:label_external_issue_links_search_placeholder) %>" />
-        <% if can_manage %>
-          <a href="#" class="icon icon-add external-issue-links-toggle-form"><%= l(:label_add_external_issue_link) %></a>
-        <% end %>
-      </div>
-    </div>
+  <div id="external-issue-links" class="external-issue-links-section" data-sort-url="<%= sort_issue_external_issue_links_path(issue) %>" data-place-after-subtasks="true">
+    <h3><%= l(:label_external_issue_links) %></h3>
+
+    <% if can_manage %>
+      <p class="external-issue-links-actions">
+        <a href="#" class="icon icon-add external-issue-links-toggle-form"><%= l(:label_add_external_issue_link) %></a>
+      </p>
+    <% end %>
 
     <% if links.any? %>
       <table class="list external-issue-links-list">
@@ -29,7 +27,7 @@
         </thead>
         <tbody>
           <% links.each do |link| %>
-            <tr class="<%= cycle('odd', 'even') %>" data-id="<%= link.id %>" data-search-text="<%= h([link.source_label, link.subject, link.url].join(' ').downcase) %>">
+            <tr class="<%= cycle('odd', 'even') %>" data-id="<%= link.id %>">
               <% if can_manage %><td class="external-issue-links-drag-handle" title="<%= l(:label_external_issue_links_drag_hint) %>">⋮⋮</td><% end %>
               <td class="source-name">
                 <%= image_tag "source_icons/#{link.source_icon}", plugin: 'redmine_external_issue_links', class: 'external-source-icon', alt: link.source_label, data: { fallback: image_path('source_icons/external.svg', plugin: 'redmine_external_issue_links') } %>
@@ -49,9 +47,6 @@
           <% end %>
         </tbody>
       </table>
-      <p class="nodata external-issue-links-filter-empty" style="display:none"><%= l(:label_external_issue_links_filter_empty) %></p>
-    <% else %>
-      <p class="nodata"><%= l(:label_no_external_issue_links) %></p>
     <% end %>
 
     <% if can_manage %>

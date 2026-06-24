@@ -1,5 +1,5 @@
 class ExternalIssueLinksController < ApplicationController
-  accept_api_auth :index, :show, :create, :update, :destroy, :sort
+  accept_api_auth :index, :show, :create, :update, :destroy
 
   before_action :find_issue, only: [:index, :create, :sort]
   before_action :find_external_issue_link, only: [:show, :update, :destroy]
@@ -68,8 +68,9 @@ class ExternalIssueLinksController < ApplicationController
     add_issue_journal(@issue, l(:journal_external_issue_links_sorted))
 
     respond_to do |format|
-      format.html { redirect_to issue_path(@issue) }
+      format.html { request.xhr? ? head(:ok) : redirect_to(issue_path(@issue)) }
       format.json { render json: { success: true } }
+      format.any { head :ok }
     end
   end
 

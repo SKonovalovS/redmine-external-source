@@ -30,7 +30,7 @@
       credentials: 'same-origin',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-        'Accept': 'application/json',
+        'Accept': 'text/javascript, text/html, application/xml, text/xml, */*',
         'X-Requested-With': 'XMLHttpRequest',
         'X-CSRF-Token': token || ''
       },
@@ -38,9 +38,22 @@
     });
   }
 
+  function moveAfterSubtasks(root) {
+    if (!root || root.getAttribute('data-place-after-subtasks') !== 'true') return;
+
+    var issueTree = document.getElementById('issue_tree');
+    if (issueTree && issueTree.parentNode && issueTree.nextSibling !== root) {
+      issueTree.parentNode.insertBefore(root, issueTree.nextSibling);
+    }
+  }
+
   ready(function () {
     var root = document.getElementById('external-issue-links');
     if (!root) return;
+
+    function currentRows() {
+      return Array.prototype.slice.call(root.querySelectorAll('.external-issue-links-list tbody tr'));
+    }
 
     var toggle = root.querySelector('.external-issue-links-toggle-form');
     var formBox = root.querySelector('.external-issue-links-form');
@@ -58,24 +71,7 @@
       });
     }
 
-    var search = root.querySelector('.external-issue-links-search');
-    var empty = root.querySelector('.external-issue-links-filter-empty');
-    function currentRows() {
-      return Array.prototype.slice.call(root.querySelectorAll('.external-issue-links-list tbody tr'));
-    }
-
-    if (search) {
-      search.addEventListener('input', function () {
-        var q = search.value.toLowerCase().trim();
-        var visible = 0;
-        currentRows().forEach(function (row) {
-          var match = !q || (row.getAttribute('data-search-text') || '').indexOf(q) !== -1;
-          row.style.display = match ? '' : 'none';
-          if (match) visible += 1;
-        });
-        if (empty) empty.style.display = visible ? 'none' : '';
-      });
-    }
+    moveAfterSubtasks(root);
 
     root.addEventListener('click', function (e) {
       var btn = e.target.closest && e.target.closest('.external-issue-links-copy');

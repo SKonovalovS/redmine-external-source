@@ -1,15 +1,37 @@
-#external-issue-links { margin-top: 16px; }
-#external-issue-links h3 { margin: 0; }
-.external-issue-links-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
-.external-issue-links-tools { display: flex; align-items: center; gap: 10px; }
-.external-issue-links-search { max-width: 260px; }
+#external-issue-links.external-issue-links-section {
+  margin: 12px 0 14px 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+#external-issue-links h3 {
+  margin: 0 0 4px 0;
+  padding: 0;
+  font-size: inherit;
+  line-height: inherit;
+  font-weight: bold;
+}
+
+.external-issue-links-actions {
+  margin: 0 0 8px 0;
+  padding: 0;
+}
+
+#external-issue-links table.list {
+  margin-top: 0;
+  margin-bottom: 0;
+  width: 100%;
+}
+
 #external-issue-links table.list td,
 #external-issue-links table.list th { vertical-align: middle; }
 #external-issue-links td.source-name { white-space: nowrap; }
 #external-issue-links td.external-url { white-space: nowrap; }
 #external-issue-links td.buttons { text-align: right; white-space: nowrap; width: 90px; }
 .external-source-icon { width: 16px; height: 16px; margin-right: 6px; vertical-align: text-bottom; }
-.external-issue-links-form { margin-top: 12px; }
+.external-issue-links-form { margin-top: 8px; }
 .external-issue-links-form p { margin: 6px 0; }
 .external-issue-links-form label { display: inline-block; width: 120px; font-weight: bold; }
 .external-issue-links-copy { border: 0; background: transparent; cursor: pointer; margin-left: 4px; color: #169; }

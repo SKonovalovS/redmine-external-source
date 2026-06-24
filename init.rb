@@ -6,7 +6,7 @@ Redmine::Plugin.register :redmine_external_issue_links do
   name 'Redmine External Source Links'
   author 'Konovalov Semyon'
   description 'Adds external source links to Redmine issues with icons, ordering, journal notes and REST API.'
-  version '1.0.1'
+  version '1.0.2'
   requires_redmine version_or_higher: '5.0.0'
 
   project_module :external_issue_links do
