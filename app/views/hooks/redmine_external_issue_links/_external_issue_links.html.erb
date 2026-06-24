@@ -1,4 +1,5 @@
-<% issue = context[:issue] %>
+<% issue = @issue || local_assigns[:issue] %>
+<% return unless issue %>
 <% project = issue.project %>
 <% if project.module_enabled?(:external_issue_links) && User.current.allowed_to?(:view_external_issue_links, project) %>
   <% links = issue.external_issue_links.order(:position, :id) %>

@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.1 - 2026-06-24
+
+- Fixed Redmine 5.0.x issue hook rendering: use `@issue` instead of unavailable `context`.
+- Improved drag & drop sorting: drag is started only from the handle.
+- Improved sorting request: URL-encoded POST with `_method=patch`, CSRF token and `X-Requested-With`.
+- Prevented accidental native URL/text drag behavior from rows and links.
+
 ## 1.0.0
 
 - Added RU/EN localization.

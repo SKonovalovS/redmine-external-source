@@ -18,6 +18,26 @@
     }
   }
 
+  function postSort(sortUrl, ids) {
+    var token = csrfToken();
+    var body = '_method=patch';
+    ids.forEach(function (id) {
+      body += '&external_issue_link_ids[]=' + encodeURIComponent(id);
+    });
+
+    return fetch(sortUrl, {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+        'Accept': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest',
+        'X-CSRF-Token': token || ''
+      },
+      body: body
+    });
+  }
+
   ready(function () {
     var root = document.getElementById('external-issue-links');
     if (!root) return;
@@ -39,13 +59,16 @@
     }
 
     var search = root.querySelector('.external-issue-links-search');
-    var rows = Array.prototype.slice.call(root.querySelectorAll('.external-issue-links-list tbody tr'));
     var empty = root.querySelector('.external-issue-links-filter-empty');
-    if (search && rows.length) {
+    function currentRows() {
+      return Array.prototype.slice.call(root.querySelectorAll('.external-issue-links-list tbody tr'));
+    }
+
+    if (search) {
       search.addEventListener('input', function () {
         var q = search.value.toLowerCase().trim();
         var visible = 0;
-        rows.forEach(function (row) {
+        currentRows().forEach(function (row) {
           var match = !q || (row.getAttribute('data-search-text') || '').indexOf(q) !== -1;
           row.style.display = match ? '' : 'none';
           if (match) visible += 1;
@@ -86,46 +109,81 @@
     }
 
     var tbody = root.querySelector('.external-issue-links-list tbody');
-    var dragged;
+    var dragged = null;
+    var dragAllowed = false;
+    var orderBeforeDrag = null;
+
     if (tbody) {
-      rows.forEach(function (row) {
-        row.setAttribute('draggable', 'true');
-        row.addEventListener('dragstart', function () {
-          dragged = row;
-          row.classList.add('external-issue-link-dragging');
+      currentRows().forEach(function (row) {
+        var handle = row.querySelector('.external-issue-links-drag-handle');
+        if (!handle) return;
+
+        row.setAttribute('draggable', 'false');
+        handle.setAttribute('draggable', 'true');
+
+        handle.addEventListener('mousedown', function () {
+          dragAllowed = true;
+          row.setAttribute('draggable', 'true');
         });
+
+        handle.addEventListener('dragstart', function (e) {
+          dragged = row;
+          orderBeforeDrag = orderedIds().join(',');
+          row.classList.add('external-issue-link-dragging');
+          if (e.dataTransfer) {
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/plain', '');
+          }
+        });
+
+        row.addEventListener('dragstart', function (e) {
+          if (!dragAllowed) e.preventDefault();
+        });
+
         row.addEventListener('dragend', function () {
           row.classList.remove('external-issue-link-dragging');
+          row.setAttribute('draggable', 'false');
+          dragAllowed = false;
+
+          var orderAfterDrag = orderedIds().join(',');
           dragged = null;
-          saveOrder();
+
+          if (orderBeforeDrag && orderBeforeDrag !== orderAfterDrag) saveOrder();
+          orderBeforeDrag = null;
         });
+
         row.addEventListener('dragover', function (e) {
-          e.preventDefault();
           if (!dragged || dragged === row) return;
+          e.preventDefault();
           var rect = row.getBoundingClientRect();
           var after = (e.clientY - rect.top) > rect.height / 2;
           tbody.insertBefore(dragged, after ? row.nextSibling : row);
         });
       });
+
+      tbody.addEventListener('dragover', function (e) {
+        if (dragged) e.preventDefault();
+      });
+    }
+
+    function orderedIds() {
+      if (!tbody) return [];
+      return Array.prototype.slice.call(tbody.querySelectorAll('tr[data-id]')).map(function (row) {
+        return row.getAttribute('data-id');
+      });
     }
 
     function saveOrder() {
       var sortUrl = root.getAttribute('data-sort-url');
-      if (!sortUrl) return;
-      var ids = Array.prototype.slice.call(tbody.querySelectorAll('tr[data-id]')).map(function (row) {
-        return row.getAttribute('data-id');
+      if (!sortUrl || !tbody) return;
+      postSort(sortUrl, orderedIds()).then(function (response) {
+        if (!response.ok) {
+          // Keep UI responsive, but log the real HTTP status for debugging.
+          if (window.console) console.warn('External issue links sort failed', response.status);
+        }
+      }).catch(function (error) {
+        if (window.console) console.warn('External issue links sort request failed', error);
       });
-      var token = csrfToken();
-      fetch(sortUrl, {
-        method: 'PATCH',
-        credentials: 'same-origin',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'X-CSRF-Token': token || ''
-        },
-        body: JSON.stringify({ external_issue_link_ids: ids })
-      }).catch(function () {});
     }
   });
 })();
