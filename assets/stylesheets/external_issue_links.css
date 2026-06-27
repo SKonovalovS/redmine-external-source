@@ -9,8 +9,9 @@
 #external-issue-links h3 {
   margin: 0 0 4px 0;
   padding: 0;
-  font-size: inherit;
-  line-height: inherit;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-size: 12px;
+  line-height: normal;
   font-weight: bold;
 }
 
@@ -29,7 +30,7 @@
 #external-issue-links table.list th { vertical-align: middle; }
 #external-issue-links td.source-name { white-space: nowrap; }
 #external-issue-links td.external-url { white-space: nowrap; }
-#external-issue-links td.buttons { text-align: right; white-space: nowrap; width: 90px; }
+#external-issue-links td.buttons { text-align: center; white-space: nowrap; width: 90px; }
 .external-source-icon { width: 16px; height: 16px; margin-right: 6px; vertical-align: text-bottom; }
 .external-issue-links-form { margin-top: 8px; }
 .external-issue-links-form p { margin: 6px 0; }
@@ -40,3 +41,23 @@
 .external-issue-link-dragging { opacity: .55; }
 .external-favicon-preview { width: 16px; height: 16px; margin-left: 6px; vertical-align: text-bottom; }
 .external-issue-links-settings-example { margin-left: 180px; max-width: 520px; }
+
+
+#external-issue-links .external-source-select,
+#external-issue-links .select2-container,
+#external-issue-links .select2-choice,
+#external-issue-links .select2-dropdown-open,
+.select2-drop.external-issue-links-source-dropdown {
+  min-width: 210px !important;
+  width: 210px !important;
+}
+
+.select2-drop .select2-results,
+.select2-drop .select2-results ul,
+.select2-drop .select2-result-label {
+  overflow-x: hidden !important;
+}
+
+.select2-drop .select2-result-label {
+  white-space: nowrap;
+}

@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.0.3
+
+- Improved external source form layout.
+- Fixed source icon preview update when source changes.
+- Moved external source section above Redmine subtasks.
+- Added BitBucket and Other sources.
+- Removed YouTrack from built-in source list.
+- Updated source icons from provided icon pack.
+- Added plugin author URL and repository URL metadata.
+- Added automatic subject fetching from URL when accessible.
+- Centered delete action in external sources table.
+
 ## 1.0.2 - 2026-06-24
 
 - Reworked issue page UI to look like native Redmine sections instead of a boxed panel.

@@ -5,7 +5,7 @@
   <% links = issue.external_issue_links.order(:position, :id) %>
   <% can_manage = User.current.allowed_to?(:manage_external_issue_links, project) %>
 
-  <div id="external-issue-links" class="external-issue-links-section" data-sort-url="<%= sort_issue_external_issue_links_path(issue) %>" data-place-after-subtasks="true">
+  <div id="external-issue-links" class="external-issue-links-section" data-sort-url="<%= sort_issue_external_issue_links_path(issue) %>" data-fetch-title-url="<%= fetch_title_issue_external_issue_links_path(issue) %>" data-place-before-subtasks="true">
     <h3><%= l(:label_external_issue_links) %></h3>
 
     <% if can_manage %>
@@ -55,12 +55,12 @@
         <%= form_for ExternalIssueLink.new, url: issue_external_issue_links_path(issue) do |f| %>
           <p>
             <%= f.label :source_type, l(:field_source_type) %>
-            <%= f.select :source_type, RedmineExternalIssueLinks::SourceRegistry.options, {}, class: 'external-source-select' %>
+            <%= f.select :source_type, RedmineExternalIssueLinks::SourceRegistry.options, {}, class: 'external-source-select', data: { icon_map: RedmineExternalIssueLinks::SourceRegistry.icon_map.to_json } %>
             <span class="external-source-preview"><%= image_tag 'source_icons/jira.svg', plugin: 'redmine_external_issue_links', class: 'external-source-icon external-source-preview-icon', alt: '' %></span>
           </p>
           <p>
             <%= f.label :subject, l(:field_subject) %>
-            <%= f.text_field :subject, size: 60, required: true %>
+            <%= f.text_field :subject, size: 60, required: true, class: 'external-subject-input' %>
           </p>
           <p>
             <%= f.label :url, l(:field_url) %>

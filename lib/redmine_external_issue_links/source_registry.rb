@@ -4,16 +4,17 @@ module RedmineExternalIssueLinks
   class SourceRegistry
     BUILTIN_SOURCES = [
       { key: 'jira', label: 'Jira', icon: 'jira.svg' },
-      { key: 'youtrack', label: 'YouTrack', icon: 'youtrack.svg' },
-      { key: 'redmine_external', label: 'Redmine(внешний)', icon: 'redmine_external.svg' },
-      { key: 'bookstack', label: 'BookStack', icon: 'bookstack.svg' },
-      { key: 'alfresco', label: 'Alfresco', icon: 'alfresco.svg' },
+      { key: 'redmine_external', label: 'Redmine(внешний)', icon: 'redmine_external.ico' },
+      { key: 'bookstack', label: 'BookStack', icon: 'bookstack.png' },
+      { key: 'alfresco', label: 'Alfresco', icon: 'alfresco.png' },
       { key: 'confluence', label: 'Confluence', icon: 'confluence.svg' },
       { key: 'telegram', label: 'Telegram', icon: 'telegram.svg' },
-      { key: 'max', label: 'MAX', icon: 'max.svg' },
-      { key: 'gitlab', label: 'Gitlab', icon: 'gitlab.svg' },
-      { key: 'github', label: 'GitHub', icon: 'github.svg' },
-      { key: 'youtube', label: 'YouTube', icon: 'youtube.svg' }
+      { key: 'max', label: 'MAX', icon: 'max.png' },
+      { key: 'gitlab', label: 'GitLab', icon: 'gitlab.png' },
+      { key: 'github', label: 'GitHub', icon: 'github.png' },
+      { key: 'bitbucket', label: 'BitBucket', icon: 'bitbucket.svg' },
+      { key: 'youtube', label: 'YouTube', icon: 'youtube.svg' },
+      { key: 'other', label: 'Other', icon: 'other.svg' }
     ].freeze
 
     class << self
@@ -41,8 +42,14 @@ module RedmineExternalIssueLinks
         all.map { |source| source[:key].to_s }
       end
 
+      def icon_map
+        all.each_with_object({}) do |source, memo|
+          memo[source[:key].to_s] = source[:icon].presence || 'external.svg'
+        end
+      end
+
       def external_source
-        { key: 'external', label: 'External', icon: 'external.svg' }
+        { key: 'external', label: 'Other', icon: 'other.svg' }
       end
 
       def custom_sources
