@@ -3,6 +3,7 @@ en:
   permission_view_external_issue_links: "View external sources"
   permission_manage_external_issue_links: "Manage external sources"
   label_external_issue_links: "External source"
+  label_edit_external_issue_link: "Edit external source"
   label_add_external_issue_link: "Add external source"
   label_no_external_issue_links: "No external sources added"
   label_external_issue_links_search_placeholder: "Search by subject or link"

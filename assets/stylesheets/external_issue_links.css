@@ -65,3 +65,26 @@
 
 #external-issue-links td.buttons, #external-issue-links th.buttons { text-align: center; }
 #external-issue-links td.buttons a.icon-del { display: inline-block; float: none; }
+
+
+#external-issue-links .external-issue-link-row { cursor: default; }
+#external-issue-links .external-issue-link-row:hover td { background-color: #ffffdd; }
+#external-issue-links .external-issue-links-row-actions {
+  text-align: center;
+  white-space: nowrap;
+  width: 56px;
+}
+#external-issue-links .external-issue-links-row-actions a.icon {
+  display: inline-block;
+  float: none;
+  min-width: 16px;
+  min-height: 16px;
+  margin: 0 3px;
+  padding-left: 16px;
+  text-indent: -9999px;
+  overflow: hidden;
+  vertical-align: middle;
+}
+#external-issue-links .external-issue-links-edit-form {
+  margin-top: 8px;
+}

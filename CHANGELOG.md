@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.2.0
+
+### Added
+- Added external source editing.
+- Added pencil action for editing existing external sources.
+- Added double-click row editing.
+
+### Changed
+- Replaced delete text with a compact trash icon action.
+- Improved row actions layout.
+
 ## 1.1.0 - 2026-06-27
 
 ### Removed

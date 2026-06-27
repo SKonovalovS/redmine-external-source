@@ -18,7 +18,6 @@
     }
   }
 
-
   function pluginIconPath(icon) {
     if (!icon) icon = 'other.svg';
     return '/plugin_assets/redmine_external_issue_links/images/source_icons/' + icon;
@@ -62,6 +61,62 @@
     }
   }
 
+  function initFaviconPreview(box) {
+    var urlInput = box.querySelector('.external-url-input');
+    var faviconPreview = box.querySelector('.external-favicon-preview');
+    if (!urlInput || !faviconPreview) return;
+
+    var update = function () {
+      var favicon = originFavicon(urlInput.value);
+      if (favicon) {
+        faviconPreview.src = favicon;
+        faviconPreview.style.display = '';
+      } else {
+        faviconPreview.style.display = 'none';
+      }
+    };
+
+    urlInput.addEventListener('input', update);
+    faviconPreview.addEventListener('error', function () {
+      faviconPreview.style.display = 'none';
+    });
+    update();
+  }
+
+  function initSourcePreview(box) {
+    var sourceSelect = box.querySelector('.external-source-select');
+    var sourcePreviewIcon = box.querySelector('.external-source-preview-icon');
+    if (!sourceSelect || !sourcePreviewIcon) return;
+
+    var iconMap = parseIconMap(sourceSelect);
+    var updateSourceIcon = function () {
+      sourcePreviewIcon.src = pluginIconPath(iconMap[sourceSelect.value] || 'other.svg');
+    };
+
+    sourceSelect.addEventListener('change', updateSourceIcon);
+    updateSourceIcon();
+  }
+
+  function setFormValues(formBox, row) {
+    if (!formBox || !row) return;
+
+    var form = formBox.querySelector('form');
+    var source = formBox.querySelector('[name="external_issue_link[source_type]"]');
+    var subject = formBox.querySelector('[name="external_issue_link[subject]"]');
+    var url = formBox.querySelector('[name="external_issue_link[url]"]');
+
+    if (form) form.action = row.getAttribute('data-update-url') || '#';
+    if (source) {
+      source.value = row.getAttribute('data-source-type') || 'other';
+      source.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+    if (subject) subject.value = row.getAttribute('data-subject') || '';
+    if (url) {
+      url.value = row.getAttribute('data-url') || '';
+      url.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+  }
+
   ready(function () {
     var root = document.getElementById('external-issue-links');
     if (!root) return;
@@ -71,18 +126,28 @@
     }
 
     var toggle = root.querySelector('.external-issue-links-toggle-form');
-    var formBox = root.querySelector('.external-issue-links-form');
+    var addFormBox = root.querySelector('.external-issue-links-add-form');
+    var editFormBox = root.querySelector('.external-issue-links-edit-form');
     var cancel = root.querySelector('.external-issue-links-cancel');
-    if (toggle && formBox) {
+    var editCancel = root.querySelector('.external-issue-links-edit-cancel');
+
+    if (toggle && addFormBox) {
       toggle.addEventListener('click', function (e) {
         e.preventDefault();
-        formBox.style.display = formBox.style.display === 'none' ? '' : 'none';
+        if (editFormBox) editFormBox.style.display = 'none';
+        addFormBox.style.display = addFormBox.style.display === 'none' ? '' : 'none';
       });
     }
-    if (cancel && formBox) {
+    if (cancel && addFormBox) {
       cancel.addEventListener('click', function (e) {
         e.preventDefault();
-        formBox.style.display = 'none';
+        addFormBox.style.display = 'none';
+      });
+    }
+    if (editCancel && editFormBox) {
+      editCancel.addEventListener('click', function (e) {
+        e.preventDefault();
+        editFormBox.style.display = 'none';
       });
     }
 
@@ -102,35 +167,33 @@
       }
     });
 
-    var urlInput = root.querySelector('.external-url-input');
-    var faviconPreview = root.querySelector('.external-favicon-preview');
-    if (urlInput && faviconPreview) {
-      urlInput.addEventListener('input', function () {
-        var favicon = originFavicon(urlInput.value);
-        if (favicon) {
-          faviconPreview.src = favicon;
-          faviconPreview.style.display = '';
-        } else {
-          faviconPreview.style.display = 'none';
-        }
-      });
-      faviconPreview.addEventListener('error', function () {
-        faviconPreview.style.display = 'none';
-      });
+    function openEditForm(row) {
+      if (!row || !editFormBox) return;
+      if (addFormBox) addFormBox.style.display = 'none';
+      setFormValues(editFormBox, row);
+      editFormBox.style.display = '';
+      editFormBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      var subjectInput = editFormBox.querySelector('[name="external_issue_link[subject]"]');
+      if (subjectInput) subjectInput.focus();
     }
 
-    var sourceSelect = root.querySelector('.external-source-select');
-    var sourcePreviewIcon = root.querySelector('.external-source-preview-icon');
-    if (sourceSelect && sourcePreviewIcon) {
-      var iconMap = parseIconMap(sourceSelect);
-      var updateSourceIcon = function () {
-        sourcePreviewIcon.src = pluginIconPath(iconMap[sourceSelect.value] || 'other.svg');
-      };
-      sourceSelect.addEventListener('change', updateSourceIcon);
-      updateSourceIcon();
-    }
+    root.addEventListener('click', function (e) {
+      var editBtn = e.target.closest && e.target.closest('.external-issue-links-edit');
+      if (!editBtn) return;
+      e.preventDefault();
+      openEditForm(editBtn.closest('tr[data-id]'));
+    });
 
+    root.addEventListener('dblclick', function (e) {
+      if (e.target.closest && e.target.closest('a, button, input, select, textarea, .external-issue-links-drag-handle')) return;
+      var row = e.target.closest && e.target.closest('tr[data-id]');
+      if (row) openEditForm(row);
+    });
 
+    Array.prototype.slice.call(root.querySelectorAll('.external-issue-links-form')).forEach(function (box) {
+      initFaviconPreview(box);
+      initSourcePreview(box);
+    });
 
     var tbody = root.querySelector('.external-issue-links-list tbody');
     var dragged = null;
@@ -201,9 +264,8 @@
       var sortUrl = root.getAttribute('data-sort-url');
       if (!sortUrl || !tbody) return;
       postSort(sortUrl, orderedIds()).then(function (response) {
-        if (!response.ok) {
-          // Keep UI responsive, but log the real HTTP status for debugging.
-          if (window.console) console.warn('External issue links sort failed', response.status);
+        if (!response.ok && window.console) {
+          console.warn('External issue links sort failed', response.status);
         }
       }).catch(function (error) {
         if (window.console) console.warn('External issue links sort request failed', error);

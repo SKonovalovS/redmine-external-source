@@ -3,6 +3,7 @@ ru:
   permission_view_external_issue_links: "Просмотр внешних источников"
   permission_manage_external_issue_links: "Управление внешними источниками"
   label_external_issue_links: "Внешний источник"
+  label_edit_external_issue_link: "Редактировать внешний источник"
   label_add_external_issue_link: "Добавить внешний источник"
   label_no_external_issue_links: "Внешние источники не добавлены"
   label_external_issue_links_search_placeholder: "Поиск по теме или ссылке"

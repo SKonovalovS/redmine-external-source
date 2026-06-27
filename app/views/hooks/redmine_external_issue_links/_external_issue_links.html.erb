@@ -22,12 +22,12 @@
             <th><%= l(:field_source_type) %></th>
             <th><%= l(:field_subject) %></th>
             <th><%= l(:field_url) %></th>
-            <% if can_manage %><th class="buttons"></th><% end %>
+            <% if can_manage %><th class="buttons external-issue-links-actions-column"></th><% end %>
           </tr>
         </thead>
         <tbody>
           <% links.each do |link| %>
-            <tr class="<%= cycle('odd', 'even') %>" data-id="<%= link.id %>">
+            <tr class="<%= cycle('odd', 'even') %> external-issue-link-row" data-id="<%= link.id %>" data-source-type="<%= h(link.source_type) %>" data-subject="<%= h(link.subject) %>" data-url="<%= h(link.url) %>" data-update-url="<%= external_issue_link_path(link) %>">
               <% if can_manage %><td class="external-issue-links-drag-handle" title="<%= l(:label_external_issue_links_drag_hint) %>">⋮⋮</td><% end %>
               <td class="source-name">
                 <%= image_tag "source_icons/#{link.source_icon}", plugin: 'redmine_external_issue_links', class: 'external-source-icon', alt: link.source_label, data: { fallback: image_path('source_icons/external.svg', plugin: 'redmine_external_issue_links') } %>
@@ -39,8 +39,9 @@
                 <button type="button" class="external-issue-links-copy" data-url="<%= h(link.url) %>" title="<%= l(:button_copy_external_issue_link) %>">⧉</button>
               </td>
               <% if can_manage %>
-                <td class="buttons">
-                  <%= link_to l(:button_delete), external_issue_link_path(link), method: :delete, data: { confirm: l(:text_are_you_sure) }, class: 'icon icon-del' %>
+                <td class="buttons external-issue-links-row-actions">
+                  <a href="#" class="icon icon-edit external-issue-links-edit" title="<%= l(:button_edit) %>"></a>
+                  <%= link_to '', external_issue_link_path(link), method: :delete, data: { confirm: l(:text_are_you_sure) }, class: 'icon icon-del external-issue-links-delete', title: l(:button_delete) %>
                 </td>
               <% end %>
             </tr>
@@ -50,7 +51,7 @@
     <% end %>
 
     <% if can_manage %>
-      <fieldset class="external-issue-links-form" style="display:none">
+      <fieldset class="external-issue-links-form external-issue-links-add-form" style="display:none">
         <legend><%= l(:label_add_external_issue_link) %></legend>
         <%= form_for ExternalIssueLink.new, url: issue_external_issue_links_path(issue) do |f| %>
           <p>
@@ -70,6 +71,31 @@
           <p class="buttons">
             <%= f.submit l(:button_add) %>
             <a href="#" class="external-issue-links-cancel"><%= l(:button_cancel) %></a>
+          </p>
+        <% end %>
+      </fieldset>
+
+      <fieldset class="external-issue-links-form external-issue-links-edit-form" style="display:none">
+        <legend><%= l(:label_edit_external_issue_link) %></legend>
+        <%= form_tag '#', method: :post, id: 'external-issue-links-edit-form' do %>
+          <%= hidden_field_tag :_method, 'patch' %>
+          <p>
+            <%= label_tag 'external_issue_link_source_type_edit', l(:field_source_type) %>
+            <%= select_tag 'external_issue_link[source_type]', options_for_select(RedmineExternalIssueLinks::SourceRegistry.options), id: 'external_issue_link_source_type_edit', class: 'external-source-select external-edit-source-select', data: { icon_map: RedmineExternalIssueLinks::SourceRegistry.icon_map.to_json } %>
+            <span class="external-source-preview"><%= image_tag 'source_icons/jira.svg', plugin: 'redmine_external_issue_links', class: 'external-source-icon external-source-preview-icon', alt: '' %></span>
+          </p>
+          <p>
+            <%= label_tag 'external_issue_link_subject_edit', l(:field_subject) %>
+            <%= text_field_tag 'external_issue_link[subject]', '', id: 'external_issue_link_subject_edit', size: 60, required: true, class: 'external-subject-input' %>
+          </p>
+          <p>
+            <%= label_tag 'external_issue_link_url_edit', l(:field_url) %>
+            <%= url_field_tag 'external_issue_link[url]', '', id: 'external_issue_link_url_edit', size: 80, required: true, placeholder: 'https://example.ru/task/123', class: 'external-url-input' %>
+            <img class="external-favicon-preview" alt="" style="display:none" />
+          </p>
+          <p class="buttons">
+            <%= submit_tag l(:button_save) %>
+            <a href="#" class="external-issue-links-edit-cancel"><%= l(:button_cancel) %></a>
           </p>
         <% end %>
       </fieldset>

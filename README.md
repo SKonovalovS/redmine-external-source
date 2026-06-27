@@ -14,6 +14,8 @@ The plugin does **not** synchronize statuses and does **not** require external A
 
 ## Features
 
+- Edit existing external sources with a pencil action or by double-clicking a row
+
 - Native Redmine issue-page section: **External source**.
 - Enable or disable per project via **Project settings → Modules**.
 - Role permissions:
@@ -153,8 +155,8 @@ bundle exec rake redmine:plugins:migrate RAILS_ENV=production
 Create a version tag:
 
 ```bash
-git tag -a v1.1.0 -m "Release 1.1.0"
-git push origin v1.1.0
+git tag -a v1.2.0 -m "Release 1.2.0"
+git push origin v1.2.0
 ```
 
 The release workflow builds a ZIP archive automatically.
