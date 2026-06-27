@@ -1,14 +1,10 @@
-require 'open-uri'
-require 'cgi'
-require 'openssl'
-
 class ExternalIssueLinksController < ApplicationController
   accept_api_auth :index, :show, :create, :update, :destroy
 
-  before_action :find_issue, only: [:index, :create, :sort, :fetch_title]
+  before_action :find_issue, only: [:index, :create, :sort]
   before_action :find_external_issue_link, only: [:show, :update, :destroy]
   before_action :authorize_view_external_issue_links, only: [:index, :show]
-  before_action :authorize_manage_external_issue_links, only: [:create, :update, :destroy, :sort, :fetch_title]
+  before_action :authorize_manage_external_issue_links, only: [:create, :update, :destroy, :sort]
 
   helper :external_issue_links
 
@@ -28,12 +24,6 @@ class ExternalIssueLinksController < ApplicationController
     end
   end
 
-
-  def fetch_title
-    url = params[:url].to_s.strip
-    title = fetch_remote_title(url)
-    render json: { title: title.to_s }
-  end
 
   def create
     @external_issue_link = @issue.external_issue_links.build(external_issue_link_params)
@@ -87,18 +77,6 @@ class ExternalIssueLinksController < ApplicationController
 
   private
 
-
-  def fetch_remote_title(url)
-    uri = URI.parse(url)
-    return '' unless uri.is_a?(URI::HTTP) || uri.is_a?(URI::HTTPS)
-
-    html = URI.open(uri, read_timeout: 4, open_timeout: 4, ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE, 'User-Agent' => 'Redmine External Source Links').read(200_000)
-    title = html.to_s[/<title[^>]*>(.*?)<\/title>/im, 1].to_s
-    CGI.unescapeHTML(title.gsub(/\s+/, ' ').strip).first(255)
-  rescue StandardError => e
-    Rails.logger.info("[redmine_external_issue_links] title fetch failed: #{e.class}: #{e.message}")
-    ''
-  end
 
   def find_issue
     @issue = Issue.find(params[:issue_id])

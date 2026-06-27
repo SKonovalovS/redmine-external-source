@@ -1,0 +1,70 @@
+name: Compatibility
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  redmine:
+    name: Redmine ${{ matrix.redmine }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        redmine: ['5.0-stable', '5.1-stable', '6.0-stable']
+    steps:
+      - name: Checkout plugin
+        uses: actions/checkout@v4
+        with:
+          path: redmine_external_issue_links
+
+      - name: Checkout Redmine
+        uses: actions/checkout@v4
+        with:
+          repository: redmine/redmine
+          ref: ${{ matrix.redmine }}
+          path: redmine
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libsqlite3-dev
+
+      - name: Install Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.1'
+          bundler-cache: false
+
+      - name: Install plugin into Redmine
+        run: |
+          cp -R redmine_external_issue_links redmine/plugins/redmine_external_issue_links
+
+      - name: Configure Redmine
+        working-directory: redmine
+        run: |
+          cp config/database.yml.example config/database.yml
+          ruby -0777 -i -pe "gsub(/production:\n  adapter: mysql2.*?(?=\n\w|\z)/m, \"production:\n  adapter: sqlite3\n  database: db/redmine.sqlite3\n\")" config/database.yml
+
+      - name: Bundle install
+        working-directory: redmine
+        run: |
+          bundle config set without 'development test'
+          bundle install --jobs 4 --retry 3
+
+      - name: Run Redmine migrations
+        working-directory: redmine
+        env:
+          RAILS_ENV: production
+        run: |
+          bundle exec rake db:migrate
+          bundle exec rake redmine:plugins:migrate
+
+      - name: List plugins
+        working-directory: redmine
+        env:
+          RAILS_ENV: production
+        run: |
+          bundle exec rake redmine:plugins

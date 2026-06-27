@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.1.0 - 2026-06-27
+
+### Removed
+- Removed automatic title fetching from URLs because private resources often return login-page titles.
+
+### Fixed
+- Enlarged Jira and Confluence icons so they match the visual size of other source icons.
+
+### Added
+- Added improved README with badges, screenshots, GIF demo and REST API documentation.
+- Added GitHub Actions compatibility workflow for Redmine 5.0, 5.1 and 6.x.
+- Added GitHub Actions release workflow that builds a ZIP archive automatically when a version tag is pushed.
+
 ## 1.0.3
 
 - Improved external source form layout.

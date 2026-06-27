@@ -5,7 +5,7 @@
   <% links = issue.external_issue_links.order(:position, :id) %>
   <% can_manage = User.current.allowed_to?(:manage_external_issue_links, project) %>
 
-  <div id="external-issue-links" class="external-issue-links-section" data-sort-url="<%= sort_issue_external_issue_links_path(issue) %>" data-fetch-title-url="<%= fetch_title_issue_external_issue_links_path(issue) %>" data-place-before-subtasks="true">
+  <div id="external-issue-links" class="external-issue-links-section" data-sort-url="<%= sort_issue_external_issue_links_path(issue) %>" data-place-before-subtasks="true">
     <h3><%= l(:label_external_issue_links) %></h3>
 
     <% if can_manage %>

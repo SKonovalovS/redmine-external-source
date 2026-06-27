@@ -1,67 +1,91 @@
 # Redmine External Source Links
 
-Плагин для Redmine, который добавляет в карточку задачи блок **«Внешний источник»** — таблицу внешних ссылок на Jira, YouTrack, другой Redmine, BookStack, Alfresco, Confluence, Telegram, MAX, Gitlab, GitHub, YouTube и пользовательские источники.
+[![Version](https://img.shields.io/github/v/release/SKonovalovS/redmine-external-source?label=version)](https://github.com/SKonovalovS/redmine-external-source/releases)
+[![License](https://img.shields.io/github/license/SKonovalovS/redmine-external-source)](LICENSE)
+[![Redmine](https://img.shields.io/badge/Redmine-5.0%20%7C%205.1%20%7C%206.x-red)](https://www.redmine.org/)
+[![Downloads](https://img.shields.io/github/downloads/SKonovalovS/redmine-external-source/total)](https://github.com/SKonovalovS/redmine-external-source/releases)
+[![Compatibility](https://github.com/SKonovalovS/redmine-external-source/actions/workflows/compatibility.yml/badge.svg)](https://github.com/SKonovalovS/redmine-external-source/actions/workflows/compatibility.yml)
 
-Плагин не синхронизирует статусы и не ходит в API внешних систем. Он хранит источник, тему и ссылку, отображает иконку источника и пишет изменения в журнал задачи.
+**Redmine External Source Links** adds a native-looking **External source** section to Redmine issue pages. It lets teams attach links to external systems such as Jira, GitLab, GitHub, Confluence, BookStack, Bitbucket, Telegram, MAX, YouTube, Alfresco, another Redmine, and custom sources.
 
-Автор: **Konovalov Semyon**
+The plugin does **not** synchronize statuses and does **not** require external API credentials. It stores a source type, subject and URL, shows source icons, supports ordering, writes issue journal notes and exposes a JSON REST API.
 
-## Возможности
+![Demo](screenshots/usage.gif)
 
-- подключение/отключение на уровне проекта через **Настройки проекта → Модули**;
-- права доступа по ролям:
-  - просмотр внешних источников;
-  - управление внешними источниками;
-- блок **«Внешний источник»** в карточке задачи;
-- фиксированные источники с SVG-иконками:
+## Features
+
+- Native Redmine issue-page section: **External source**.
+- Enable or disable per project via **Project settings → Modules**.
+- Role permissions:
+  - view external sources;
+  - manage external sources.
+- Built-in sources with icons:
   - Jira;
-  - YouTrack;
-  - Redmine(внешний);
+  - Redmine (external);
   - BookStack;
   - Alfresco;
   - Confluence;
   - Telegram;
   - MAX;
-  - Gitlab;
+  - GitLab;
   - GitHub;
+  - Bitbucket;
   - YouTube;
-- пользовательские типы источников через настройки плагина;
-- добавление и удаление внешних источников;
-- REST API JSON;
-- поиск по теме и ссылке прямо в блоке задачи;
-- drag&drop сортировка строк;
-- копирование ссылки одним кликом;
-- предпросмотр favicon сайта при вводе URL;
-- журнал изменений задачи: кто добавил, изменил, удалил или отсортировал внешний источник;
-- локализация RU/EN;
-- совместимость с Redmine 5.1.x и подготовка под Redmine 6.x.
+  - Other.
+- Custom source types via plugin settings.
+- Add, delete and reorder external source links.
+- Drag & drop sorting.
+- One-click link copy.
+- Issue journal notes for add/update/delete/sort operations.
+- RU/EN localization.
+- JSON REST API.
+- Compatible with Redmine 5.0.x, 5.1.x and prepared for 6.x.
 
-## Установка
+## Screenshots
+
+### Issue page
+
+![Issue page](screenshots/issue-page.png)
+
+### Add external source
+
+![Add external source](screenshots/add-source.png)
+
+## Installation
+
+Clone or unpack the plugin into the Redmine `plugins` directory. The directory name must be exactly:
+
+```text
+redmine_external_issue_links
+```
 
 ```bash
 cd /path/to/redmine/plugins
-unzip redmine_external_issue_links_v1_0.zip
+git clone https://github.com/SKonovalovS/redmine-external-source.git redmine_external_issue_links
 
 cd /path/to/redmine
 bundle exec rake redmine:plugins:migrate RAILS_ENV=production
+bundle exec rake tmp:cache:clear RAILS_ENV=production
 sudo systemctl restart redmine
 ```
 
-## Включение в проекте
+For Docker-based installations, place the plugin into the volume or host directory used as the source for Redmine plugins, then restart the Redmine container.
 
-1. Открыть проект.
-2. Перейти в **Настройки → Модули**.
-3. Включить модуль **Внешний источник**.
-4. Перейти в **Администрирование → Роли и права**.
-5. Включить права:
-   - **Просмотр внешних источников**;
-   - **Управление внешними источниками**.
+## Enable the project module
 
-## Настройка пользовательских источников
+1. Open a project.
+2. Go to **Settings → Modules**.
+3. Enable **External source**.
+4. Go to **Administration → Roles and permissions**.
+5. Grant:
+   - **View external sources**;
+   - **Manage external sources**.
 
-Администрирование → Плагины → Redmine External Source Links → Настроить.
+## Custom sources
 
-Пример YAML:
+Go to **Administration → Plugins → Redmine External Source Links → Configure**.
+
+Example:
 
 ```yaml
 - key: sharepoint
@@ -72,25 +96,19 @@ sudo systemctl restart redmine
   icon: external.svg
 ```
 
-Если нужна своя иконка, положите SVG в:
+Custom icons should be placed in:
 
 ```text
 plugins/redmine_external_issue_links/assets/images/source_icons/
 ```
 
-и укажите имя файла в `icon`.
+Then use the file name in the `icon` field.
 
 ## REST API
 
-API поддерживает стандартную авторизацию Redmine API key.
+Full API documentation: [docs/API.md](docs/API.md)
 
-### Получить внешние источники задачи
-
-```http
-GET /issues/:issue_id/external_issue_links.json
-```
-
-### Добавить внешний источник
+Quick example:
 
 ```http
 POST /issues/:issue_id/external_issue_links.json
@@ -98,72 +116,53 @@ Content-Type: application/json
 
 {
   "external_issue_link": {
-    "source_type": "jira",
-    "subject": "Ошибка 500 при авторизации",
-    "url": "https://jira.example.com/browse/AUTH-123"
+    "source_type": "gitlab",
+    "subject": "MAX bot repository",
+    "url": "https://git.example.com/team/max-bot"
   }
 }
 ```
 
-### Получить одну запись
+## Compatibility
 
-```http
-GET /external_issue_links/:id.json
-```
+The plugin uses standard Redmine mechanisms:
 
-### Изменить запись
+- project modules;
+- permissions;
+- hooks;
+- Rails controllers;
+- ActiveRecord migrations;
+- issue journals.
 
-```http
-PUT /external_issue_links/:id.json
-Content-Type: application/json
+The compatibility workflow checks Redmine 5.0, 5.1 and 6.x on GitHub Actions.
 
-{
-  "external_issue_link": {
-    "source_type": "github",
-    "subject": "Pull request with fix",
-    "url": "https://github.com/org/repo/pull/1"
-  }
-}
-```
-
-### Удалить запись
-
-```http
-DELETE /external_issue_links/:id.json
-```
-
-### Изменить порядок
-
-```http
-PATCH /issues/:issue_id/external_issue_links/sort.json
-Content-Type: application/json
-
-{
-  "external_issue_link_ids": ["5", "3", "9"]
-}
-```
-
-## Обновление с версии 0.2.0
-
-Заменить папку плагина и выполнить миграции:
+## Development
 
 ```bash
-cd /path/to/redmine
+git clone https://github.com/SKonovalovS/redmine-external-source.git redmine_external_issue_links
+```
+
+After changing code, run plugin migrations in a test Redmine instance:
+
+```bash
 bundle exec rake redmine:plugins:migrate RAILS_ENV=production
-sudo systemctl restart redmine
 ```
 
-Миграция переведёт поле `source_name` в `source_type` и сохранит существующие ссылки.
+## Release process
 
-## Удаление
+Create a version tag:
 
 ```bash
-cd /path/to/redmine
-bundle exec rake redmine:plugins:migrate NAME=redmine_external_issue_links VERSION=0 RAILS_ENV=production
-rm -rf plugins/redmine_external_issue_links
-sudo systemctl restart redmine
+git tag -a v1.1.0 -m "Release 1.1.0"
+git push origin v1.1.0
 ```
 
-## Примечание по совместимости
+The release workflow builds a ZIP archive automatically.
 
-Плагин использует стандартные механизмы Redmine: project modules, permissions, hooks, Rails controllers, ActiveRecord migrations и issue journals. Для Redmine 6.x может потребоваться проверка на конкретной сборке, но код не использует приватные monkey-patch API, кроме минимального добавления `has_many` к `Issue`.
+## Author
+
+[Konovalov Semyon](https://github.com/SKonovalovS)
+
+## License
+
+MIT License. See [LICENSE](LICENSE).

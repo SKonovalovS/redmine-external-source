@@ -3,7 +3,6 @@ resources :issues, only: [] do
     collection do
       patch :sort
       post :sort
-      get :fetch_title
     end
   end
 end

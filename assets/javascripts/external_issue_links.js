@@ -33,16 +33,6 @@
     }
   }
 
-  function debounce(fn, delay) {
-    var timer = null;
-    return function () {
-      var self = this;
-      var args = arguments;
-      clearTimeout(timer);
-      timer = setTimeout(function () { fn.apply(self, args); }, delay);
-    };
-  }
-
   function postSort(sortUrl, ids) {
     var token = csrfToken();
     var body = '_method=patch';
@@ -140,36 +130,6 @@
       updateSourceIcon();
     }
 
-    var subjectInput = root.querySelector('.external-subject-input');
-    var fetchTitleUrl = root.getAttribute('data-fetch-title-url');
-    var fetchTitle = debounce(function () {
-      if (!urlInput || !subjectInput || !fetchTitleUrl) return;
-      if (subjectInput.value && subjectInput.value.trim().length > 0) return;
-      var url = urlInput.value.trim();
-      if (!url || !/^https?:\/\//i.test(url)) return;
-
-      fetch(fetchTitleUrl + '?url=' + encodeURIComponent(url), {
-        method: 'GET',
-        credentials: 'same-origin',
-        headers: {
-          'Accept': 'application/json',
-          'X-Requested-With': 'XMLHttpRequest'
-        }
-      }).then(function (response) {
-        if (!response.ok) return null;
-        return response.json();
-      }).then(function (data) {
-        if (data && data.title && !subjectInput.value.trim()) {
-          subjectInput.value = data.title;
-        }
-      }).catch(function () {});
-    }, 600);
-
-    if (urlInput) {
-      urlInput.addEventListener('input', fetchTitle);
-      urlInput.addEventListener('paste', function () { setTimeout(fetchTitle, 0); });
-      urlInput.addEventListener('change', fetchTitle);
-    }
 
 
     var tbody = root.querySelector('.external-issue-links-list tbody');

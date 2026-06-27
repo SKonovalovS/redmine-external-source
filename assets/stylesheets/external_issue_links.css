@@ -31,7 +31,8 @@
 #external-issue-links td.source-name { white-space: nowrap; }
 #external-issue-links td.external-url { white-space: nowrap; }
 #external-issue-links td.buttons { text-align: center; white-space: nowrap; width: 90px; }
-.external-source-icon { width: 16px; height: 16px; margin-right: 6px; vertical-align: text-bottom; }
+.external-source-icon { width: 16px; height: 16px; min-width: 16px; min-height: 16px; margin-right: 6px; vertical-align: text-bottom; object-fit: contain; }
+.external-source-preview-icon { width: 18px; height: 18px; min-width: 18px; min-height: 18px; }
 .external-issue-links-form { margin-top: 8px; }
 .external-issue-links-form p { margin: 6px 0; }
 .external-issue-links-form label { display: inline-block; width: 120px; font-weight: bold; }
@@ -61,3 +62,6 @@
 .select2-drop .select2-result-label {
   white-space: nowrap;
 }
+
+#external-issue-links td.buttons, #external-issue-links th.buttons { text-align: center; }
+#external-issue-links td.buttons a.icon-del { display: inline-block; float: none; }
