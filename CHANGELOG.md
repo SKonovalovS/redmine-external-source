@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.3.0
+
+### Added
+
+- Added `CODE_OF_CONDUCT.md`.
+- Added `CONTRIBUTING.md`.
+- Added `SECURITY.md`.
+- Added GitHub issue templates.
+- Added pull request template.
+- Improved README badges for latest release, license, Redmine compatibility, CI and downloads.
+- Expanded REST API documentation.
+- Improved open-source project documentation.
+
+
 ## 1.2.0
 
 ### Added

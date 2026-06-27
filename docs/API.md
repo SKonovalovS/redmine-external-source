@@ -1,154 +1,116 @@
 # REST API
 
-Redmine External Source Links exposes a JSON API for reading and managing external source links.
+Redmine External Source Links exposes JSON endpoints for external source management.
 
-The API uses standard Redmine authentication. For JSON API usage, pass a Redmine API key using one of the standard Redmine methods, for example:
+API access follows Redmine authentication and project permissions.
 
-```http
-X-Redmine-API-Key: <api-key>
-```
+## Permissions
 
-For browser UI actions, Redmine session authentication and CSRF protection are used.
+| Action | Required permission |
+| ------ | ------------------- |
+| List links | View external sources |
+| Show link | View external sources |
+| Create link | Manage external sources |
+| Update link | Manage external sources |
+| Delete link | Manage external sources |
+| Sort links | Manage external sources |
 
-## Data model
-
-```json
-{
-  "id": 15,
-  "issue_id": 2,
-  "source_type": "gitlab",
-  "subject": "MAX bot repository",
-  "url": "https://git.example.com/team/max-bot",
-  "position": 1,
-  "author_id": 1,
-  "updated_by_id": 1,
-  "created_at": "2026-06-27T10:00:00Z",
-  "updated_at": "2026-06-27T10:00:00Z"
-}
-```
-
-## List external source links for an issue
+## List external sources
 
 ```http
 GET /issues/:issue_id/external_issue_links.json
 ```
 
-### Response
+Example response:
 
 ```json
 {
   "external_issue_links": [
     {
-      "id": 15,
-      "issue_id": 2,
+      "id": 1,
+      "issue_id": 123,
       "source_type": "gitlab",
-      "subject": "MAX bot repository",
-      "url": "https://git.example.com/team/max-bot",
+      "source_name": "GitLab",
+      "subject": "MAX Bot repository",
+      "url": "https://gitlab.example.com/team/max-bot",
       "position": 1
     }
   ]
 }
 ```
 
-## Create external source link
+## Show external source
+
+```http
+GET /external_issue_links/:id.json
+```
+
+## Create external source
 
 ```http
 POST /issues/:issue_id/external_issue_links.json
 Content-Type: application/json
 ```
 
-### Request
-
-```json
-{
-  "external_issue_link": {
-    "source_type": "jira",
-    "subject": "Authorization error",
-    "url": "https://jira.example.com/browse/AUTH-123"
-  }
-}
-```
-
-### Response
-
-```json
-{
-  "success": true,
-  "external_issue_link": {
-    "id": 15,
-    "source_type": "jira",
-    "subject": "Authorization error",
-    "url": "https://jira.example.com/browse/AUTH-123"
-  }
-}
-```
-
-## Get one external source link
-
-```http
-GET /external_issue_links/:id.json
-```
-
-## Update external source link
-
-```http
-PUT /external_issue_links/:id.json
-Content-Type: application/json
-```
-
-### Request
-
 ```json
 {
   "external_issue_link": {
     "source_type": "github",
-    "subject": "Pull request with fix",
-    "url": "https://github.com/org/repo/pull/1"
+    "subject": "Feature request",
+    "url": "https://github.com/example/project/issues/10"
   }
 }
 ```
 
-## Delete external source link
+## Update external source
+
+```http
+PATCH /external_issue_links/:id.json
+Content-Type: application/json
+```
+
+```json
+{
+  "external_issue_link": {
+    "source_type": "bitbucket",
+    "subject": "Updated source title",
+    "url": "https://bitbucket.org/example/project/pull-requests/15"
+  }
+}
+```
+
+## Delete external source
 
 ```http
 DELETE /external_issue_links/:id.json
 ```
 
-## Sort external source links
-
-For browser UI drag & drop, the plugin uses a session-authenticated request without `.json` to avoid Redmine API Basic Auth prompts.
+## Sort external sources
 
 ```http
 PATCH /issues/:issue_id/external_issue_links/sort
-Content-Type: application/x-www-form-urlencoded
-X-CSRF-Token: <token>
-X-Requested-With: XMLHttpRequest
-```
-
-### Request
-
-```text
-external_issue_link_ids[]=5&external_issue_link_ids[]=3&external_issue_link_ids[]=9
-```
-
-For API clients, JSON is also supported:
-
-```http
-PATCH /issues/:issue_id/external_issue_links/sort.json
 Content-Type: application/json
 ```
 
 ```json
 {
-  "external_issue_link_ids": ["5", "3", "9"]
+  "ids": [3, 1, 2]
 }
 ```
 
-## Permissions
+## Supported built-in source types
 
-The project must have the **External source** module enabled.
-
-Required permissions:
-
-- `view_external_issue_links` — list and show;
-- `manage_external_issue_links` — create, update, delete and sort.
+| Key | Label |
+| --- | ----- |
+| jira | Jira |
+| redmine_external | Redmine (external) |
+| bookstack | BookStack |
+| alfresco | Alfresco |
+| confluence | Confluence |
+| telegram | Telegram |
+| max | MAX |
+| gitlab | GitLab |
+| github | GitHub |
+| bitbucket | Bitbucket |
+| youtube | YouTube |
+| other | Other |

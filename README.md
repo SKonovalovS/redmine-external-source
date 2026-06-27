@@ -1,26 +1,28 @@
 # Redmine External Source Links
 
-[![Version](https://img.shields.io/github/v/release/SKonovalovS/redmine-external-source?label=version)](https://github.com/SKonovalovS/redmine-external-source/releases)
-[![License](https://img.shields.io/github/license/SKonovalovS/redmine-external-source)](LICENSE)
-[![Redmine](https://img.shields.io/badge/Redmine-5.0%20%7C%205.1%20%7C%206.x-red)](https://www.redmine.org/)
-[![Downloads](https://img.shields.io/github/downloads/SKonovalovS/redmine-external-source/total)](https://github.com/SKonovalovS/redmine-external-source/releases)
-[![Compatibility](https://github.com/SKonovalovS/redmine-external-source/actions/workflows/compatibility.yml/badge.svg)](https://github.com/SKonovalovS/redmine-external-source/actions/workflows/compatibility.yml)
+[![Latest Release](https://img.shields.io/github/v/release/SKonovalovS/redmine-external-source?label=Latest%20Release)](https://github.com/SKonovalovS/redmine-external-source/releases)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Redmine](https://img.shields.io/badge/Redmine-5.0%20%7C%205.1%20%7C%206.x-red.svg)](https://www.redmine.org/)
+[![CI](https://github.com/SKonovalovS/redmine-external-source/actions/workflows/compatibility.yml/badge.svg)](https://github.com/SKonovalovS/redmine-external-source/actions/workflows/compatibility.yml)
+[![Downloads](https://img.shields.io/github/downloads/SKonovalovS/redmine-external-source/total?label=Downloads)](https://github.com/SKonovalovS/redmine-external-source/releases)
 
-**Redmine External Source Links** adds a native-looking **External source** section to Redmine issue pages. It lets teams attach links to external systems such as Jira, GitLab, GitHub, Confluence, BookStack, Bitbucket, Telegram, MAX, YouTube, Alfresco, another Redmine, and custom sources.
+**Redmine External Source Links** adds a native-looking **External source** section to Redmine issue pages.
 
-The plugin does **not** synchronize statuses and does **not** require external API credentials. It stores a source type, subject and URL, shows source icons, supports ordering, writes issue journal notes and exposes a JSON REST API.
+It lets teams attach links to external systems without full synchronization or API integration. The plugin stores the source type, subject, URL, display order, and journal history inside Redmine.
 
 ![Demo](screenshots/usage.gif)
 
 ## Features
 
-- Edit existing external sources with a pencil action or by double-clicking a row
-
 - Native Redmine issue-page section: **External source**.
 - Enable or disable per project via **Project settings → Modules**.
-- Role permissions:
+- Role-based permissions:
   - view external sources;
   - manage external sources.
+- Add, edit, delete, copy, and reorder external links.
+- Edit by pencil icon or by double-clicking a row.
+- Drag & drop sorting.
+- Issue journal notes for add/update/delete/sort operations.
 - Built-in sources with icons:
   - Jira;
   - Redmine (external);
@@ -35,13 +37,9 @@ The plugin does **not** synchronize statuses and does **not** require external A
   - YouTube;
   - Other.
 - Custom source types via plugin settings.
-- Add, delete and reorder external source links.
-- Drag & drop sorting.
-- One-click link copy.
-- Issue journal notes for add/update/delete/sort operations.
-- RU/EN localization.
+- Russian and English localization.
 - JSON REST API.
-- Compatible with Redmine 5.0.x, 5.1.x and prepared for 6.x.
+- Compatible with Redmine 5.0.x, 5.1.x, and 6.x.
 
 ## Screenshots
 
@@ -49,7 +47,7 @@ The plugin does **not** synchronize statuses and does **not** require external A
 
 ![Issue page](screenshots/issue-page.png)
 
-### Add external source
+### Add or edit external source
 
 ![Add external source](screenshots/add-source.png)
 
@@ -71,19 +69,32 @@ bundle exec rake tmp:cache:clear RAILS_ENV=production
 sudo systemctl restart redmine
 ```
 
-For Docker-based installations, place the plugin into the volume or host directory used as the source for Redmine plugins, then restart the Redmine container.
+For Docker-based installations, place the plugin into the host directory or volume used as the source for Redmine plugins, then restart the Redmine container.
 
-## Enable the project module
+Example:
+
+```bash
+cd /opt/redmine/data/plugins
+git clone https://github.com/SKonovalovS/redmine-external-source.git redmine_external_issue_links
+docker restart redmine-redmine-2
+```
+
+## Configuration
+
+### Enable the project module
 
 1. Open a project.
 2. Go to **Settings → Modules**.
 3. Enable **External source**.
-4. Go to **Administration → Roles and permissions**.
-5. Grant:
-   - **View external sources**;
-   - **Manage external sources**.
 
-## Custom sources
+### Configure permissions
+
+Go to **Administration → Roles and permissions** and grant:
+
+- **View external sources**;
+- **Manage external sources**.
+
+### Custom sources
 
 Go to **Administration → Plugins → Redmine External Source Links → Configure**.
 
@@ -108,7 +119,9 @@ Then use the file name in the `icon` field.
 
 ## REST API
 
-Full API documentation: [docs/API.md](docs/API.md)
+Full API documentation is available here:
+
+[docs/API.md](docs/API.md)
 
 Quick example:
 
@@ -119,52 +132,37 @@ Content-Type: application/json
 {
   "external_issue_link": {
     "source_type": "gitlab",
-    "subject": "MAX bot repository",
-    "url": "https://git.example.com/team/max-bot"
+    "subject": "MAX Bot repository",
+    "url": "https://gitlab.example.com/team/max-bot"
   }
 }
 ```
 
 ## Compatibility
 
-The plugin uses standard Redmine mechanisms:
-
-- project modules;
-- permissions;
-- hooks;
-- Rails controllers;
-- ActiveRecord migrations;
-- issue journals.
-
-The compatibility workflow checks Redmine 5.0, 5.1 and 6.x on GitHub Actions.
+| Redmine | Status |
+| ------- | ------ |
+| 5.0.x   | Supported |
+| 5.1.x   | Supported |
+| 6.x     | Supported / CI checked |
 
 ## Development
 
-```bash
-git clone https://github.com/SKonovalovS/redmine-external-source.git redmine_external_issue_links
-```
+See [CONTRIBUTING.md](CONTRIBUTING.md).
 
-After changing code, run plugin migrations in a test Redmine instance:
+## Security
 
-```bash
-bundle exec rake redmine:plugins:migrate RAILS_ENV=production
-```
+See [SECURITY.md](SECURITY.md).
 
-## Release process
+## Code of Conduct
 
-Create a version tag:
-
-```bash
-git tag -a v1.2.0 -m "Release 1.2.0"
-git push origin v1.2.0
-```
-
-The release workflow builds a ZIP archive automatically.
-
-## Author
-
-[Konovalov Semyon](https://github.com/SKonovalovS)
+See [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
 
 ## License
 
 MIT License. See [LICENSE](LICENSE).
+
+## Author
+
+Konovalov Semyon  
+GitHub: [SKonovalovS](https://github.com/SKonovalovS)
