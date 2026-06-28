@@ -1,3 +1,13 @@
+# Changelog
+
+## 1.3.5
+
+### Fixed
+
+- Fixed plugin uninstall rollback for Redmine 5.x/6.x when optional indexes are missing.
+- Made migrations safer and idempotent by checking table, column and index existence before changing schema.
+- Improved repeat install / uninstall behavior for clean environment checks.
+
 # v1.3.4
 
 - Added README uninstall instructions.

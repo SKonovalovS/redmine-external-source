@@ -11,13 +11,19 @@ class UpgradeExternalIssueLinksToV1 < ActiveRecord::Migration[6.1]
     'Gitlab' => 'gitlab',
     'GitLab' => 'gitlab',
     'GitHub' => 'github',
-    'YouTube' => 'youtube'
+    'BitBucket' => 'bitbucket',
+    'Bitbucket' => 'bitbucket',
+    'YouTube' => 'youtube',
+    'Other' => 'other'
   }.freeze
 
   def up
     return unless table_exists?(:external_issue_links)
 
-    rename_column :external_issue_links, :tracker_name, :source_name if column_exists?(:external_issue_links, :tracker_name) && !column_exists?(:external_issue_links, :source_name)
+    if column_exists?(:external_issue_links, :tracker_name) && !column_exists?(:external_issue_links, :source_name)
+      rename_column :external_issue_links, :tracker_name, :source_name
+    end
+
     remove_column :external_issue_links, :external_key if column_exists?(:external_issue_links, :external_key)
 
     unless column_exists?(:external_issue_links, :source_type)
@@ -36,14 +42,25 @@ class UpgradeExternalIssueLinksToV1 < ActiveRecord::Migration[6.1]
     add_column :external_issue_links, :position, :integer, null: false, default: 0 unless column_exists?(:external_issue_links, :position)
     add_column :external_issue_links, :updated_by_id, :integer unless column_exists?(:external_issue_links, :updated_by_id)
 
-    add_index :external_issue_links, [:issue_id, :position], name: 'idx_external_issue_links_issue_position' unless index_exists?(:external_issue_links, [:issue_id, :position], name: 'idx_external_issue_links_issue_position')
+    unless index_exists?(:external_issue_links, [:issue_id, :position], name: 'idx_external_issue_links_issue_position')
+      add_index :external_issue_links, [:issue_id, :position], name: 'idx_external_issue_links_issue_position'
+    end
   end
 
   def down
     return unless table_exists?(:external_issue_links)
 
+    if index_exists?(:external_issue_links, name: 'idx_external_issue_links_issue_position')
+      remove_index :external_issue_links, name: 'idx_external_issue_links_issue_position'
+    end
+
     add_column :external_issue_links, :source_name, :string, limit: 60 unless column_exists?(:external_issue_links, :source_name)
-    remove_column :external_issue_links, :source_type if column_exists?(:external_issue_links, :source_type)
+
+    if column_exists?(:external_issue_links, :source_type)
+      execute "UPDATE external_issue_links SET source_name = source_type WHERE source_name IS NULL OR source_name = ''" if column_exists?(:external_issue_links, :source_name)
+      remove_column :external_issue_links, :source_type
+    end
+
     remove_column :external_issue_links, :position if column_exists?(:external_issue_links, :position)
     remove_column :external_issue_links, :updated_by_id if column_exists?(:external_issue_links, :updated_by_id)
   end
