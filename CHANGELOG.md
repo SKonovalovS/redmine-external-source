@@ -1,3 +1,7 @@
+# v1.3.2
+
+- Fixed GitHub icon color in light/dark themes.
+
 # Changelog
 
 ## 1.3.1

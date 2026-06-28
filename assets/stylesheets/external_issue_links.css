@@ -104,17 +104,6 @@
 
 /* GitHub icon is black by default. In dark Redmine themes invert it to white. */
 body.external-issue-links-dark-theme #external-issue-links img.external-source-icon[src*="github"],
-html.external-issue-links-dark-theme #external-issue-links img.external-source-icon[src*="github"],
-body[class*="dark"] #external-issue-links img.external-source-icon[src*="github"],
-html[class*="dark"] #external-issue-links img.external-source-icon[src*="github"],
-body.theme-dark #external-issue-links img.external-source-icon[src*="github"],
-html.theme-dark #external-issue-links img.external-source-icon[src*="github"],
-[data-theme="dark"] #external-issue-links img.external-source-icon[src*="github"] {
+html.external-issue-links-dark-theme #external-issue-links img.external-source-icon[src*="github"] {
   filter: invert(1) brightness(1.15) contrast(1.05);
-}
-
-@media (prefers-color-scheme: dark) {
-  #external-issue-links img.external-source-icon[src*="github"] {
-    filter: invert(1) brightness(1.15) contrast(1.05);
-  }
 }
