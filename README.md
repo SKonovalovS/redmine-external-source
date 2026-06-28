@@ -138,6 +138,46 @@ Content-Type: application/json
 }
 ```
 
+## Uninstall
+
+Use the standard Redmine plugin migration rollback before removing the plugin directory.
+
+```bash
+cd /path/to/redmine
+bundle exec rake redmine:plugins:migrate NAME=redmine_external_issue_links VERSION=0 RAILS_ENV=production
+```
+
+Then remove the plugin directory:
+
+```bash
+rm -rf plugins/redmine_external_issue_links
+```
+
+Clear cache and restart Redmine:
+
+```bash
+bundle exec rake tmp:cache:clear RAILS_ENV=production
+sudo systemctl restart redmine
+```
+
+For Docker-based installations, remove the plugin from the host directory or volume used as the source for Redmine plugins, then restart the Redmine container.
+
+Example:
+
+```bash
+rm -rf /opt/redmine/data/plugins/redmine_external_issue_links
+docker restart redmine-redmine-2
+```
+
+If the database table was deleted manually while migration records remained in Redmine, clean up the plugin entries in `schema_migrations` before running migrations again:
+
+```sql
+DELETE FROM schema_migrations
+WHERE version LIKE '%redmine_external_issue_links%';
+```
+
+This manual cleanup is only needed after an incorrect manual uninstall. Prefer the standard rollback command above.
+
 ## Compatibility
 
 | Redmine | Status |

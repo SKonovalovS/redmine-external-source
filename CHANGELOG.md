@@ -1,3 +1,9 @@
+# v1.3.4
+
+- Added README uninstall instructions.
+- Documented standard Redmine plugin migration rollback.
+- Added recovery note for incorrect manual uninstall when `schema_migrations` still contains plugin migration records.
+
 # v1.3.2
 
 - Fixed GitHub icon color in light/dark themes.

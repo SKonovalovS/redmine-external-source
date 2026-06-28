@@ -8,7 +8,7 @@ Redmine::Plugin.register :redmine_external_issue_links do
   author_url 'https://github.com/SKonovalovS'
   description 'Adds external source links to Redmine issues with icons, ordering, journal notes and REST API. Plugin repository: https://github.com/SKonovalovS/redmine-external-source'
   url 'https://github.com/SKonovalovS/redmine-external-source'
-  version '1.3.2'
+  version '1.3.4'
   requires_redmine version_or_higher: '5.0.0'
 
   project_module :external_issue_links do
