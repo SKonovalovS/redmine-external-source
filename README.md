@@ -10,7 +10,7 @@
 
 It lets teams attach links to external systems without full synchronization or API integration. The plugin stores the source type, subject, URL, display order, and journal history inside Redmine.
 
-![Demo](screenshots/usage.gif)
+![External Source Links in Redmine dark theme](screenshots/external-source-dark.png)
 
 ## Features
 
@@ -45,7 +45,7 @@ It lets teams attach links to external systems without full synchronization or A
 
 ### Issue page
 
-![Issue page](screenshots/issue-page.png)
+![Issue page](screenshots/external-source-dark.png)
 
 ### Add or edit external source
 

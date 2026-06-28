@@ -23,6 +23,34 @@
     return '/plugin_assets/redmine_external_issue_links/images/source_icons/' + icon;
   }
 
+
+  function parseRgb(value) {
+    if (!value) return null;
+    var match = value.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([0-9.]+))?\)/i);
+    if (!match) return null;
+    var alpha = match[4] === undefined ? 1 : parseFloat(match[4]);
+    if (alpha === 0) return null;
+    return { r: parseInt(match[1], 10), g: parseInt(match[2], 10), b: parseInt(match[3], 10) };
+  }
+
+  function luminance(rgb) {
+    if (!rgb) return 255;
+    return (0.2126 * rgb.r) + (0.7152 * rgb.g) + (0.0722 * rgb.b);
+  }
+
+  function detectDarkTheme(root) {
+    var candidates = [root, document.querySelector('#content'), document.body, document.documentElement];
+    for (var i = 0; i < candidates.length; i += 1) {
+      if (!candidates[i]) continue;
+      var bg = parseRgb(window.getComputedStyle(candidates[i]).backgroundColor);
+      if (bg && luminance(bg) < 128) {
+        document.body.classList.add('external-issue-links-dark-theme');
+        document.documentElement.classList.add('external-issue-links-dark-theme');
+        return;
+      }
+    }
+  }
+
   function parseIconMap(select) {
     if (!select) return {};
     try {
@@ -120,6 +148,8 @@
   ready(function () {
     var root = document.getElementById('external-issue-links');
     if (!root) return;
+
+    detectDarkTheme(root);
 
     function currentRows() {
       return Array.prototype.slice.call(root.querySelectorAll('.external-issue-links-list tbody tr'));

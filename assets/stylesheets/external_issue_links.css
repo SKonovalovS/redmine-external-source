@@ -68,7 +68,7 @@
 
 
 #external-issue-links .external-issue-link-row { cursor: default; }
-#external-issue-links .external-issue-link-row:hover td { background-color: #ffffdd; }
+
 #external-issue-links .external-issue-links-row-actions {
   text-align: center;
   white-space: nowrap;
@@ -87,4 +87,34 @@
 }
 #external-issue-links .external-issue-links-edit-form {
   margin-top: 8px;
+}
+
+/* v1.3.1: keep row hover neutral in both light and dark Redmine themes.
+   Redmine default themes may apply a beige hover background to table rows;
+   the plugin should look like native issue sections without forced highlight. */
+#external-issue-links table.list tbody tr:hover,
+#external-issue-links table.list tbody tr:hover td,
+#external-issue-links table.list tbody tr.odd:hover td,
+#external-issue-links table.list tbody tr.even:hover td,
+#external-issue-links .external-issue-link-row:hover,
+#external-issue-links .external-issue-link-row:hover td {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+/* GitHub icon is black by default. In dark Redmine themes invert it to white. */
+body.external-issue-links-dark-theme #external-issue-links img.external-source-icon[src*="github"],
+html.external-issue-links-dark-theme #external-issue-links img.external-source-icon[src*="github"],
+body[class*="dark"] #external-issue-links img.external-source-icon[src*="github"],
+html[class*="dark"] #external-issue-links img.external-source-icon[src*="github"],
+body.theme-dark #external-issue-links img.external-source-icon[src*="github"],
+html.theme-dark #external-issue-links img.external-source-icon[src*="github"],
+[data-theme="dark"] #external-issue-links img.external-source-icon[src*="github"] {
+  filter: invert(1) brightness(1.15) contrast(1.05);
+}
+
+@media (prefers-color-scheme: dark) {
+  #external-issue-links img.external-source-icon[src*="github"] {
+    filter: invert(1) brightness(1.15) contrast(1.05);
+  }
 }

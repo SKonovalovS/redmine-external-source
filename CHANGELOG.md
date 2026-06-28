@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.3.1
+
+### Fixed
+
+- Removed beige row hover background from external source table in both light and dark Redmine themes.
+- Added automatic dark-theme detection for plugin assets.
+- Inverted the GitHub icon in dark themes so it remains visible on dark backgrounds.
+
 ## 1.3.0
 
 ### Added
