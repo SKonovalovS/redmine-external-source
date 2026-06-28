@@ -36,8 +36,8 @@ class CreateExternalIssueLinks < ActiveRecord::Migration[6.1]
   def down
     return unless table_exists?(:external_issue_links)
 
-    remove_index :external_issue_links, name: 'idx_external_issue_links_issue_position' if index_exists?(:external_issue_links, name: 'idx_external_issue_links_issue_position')
-    remove_index :external_issue_links, name: 'idx_external_issue_links_issue_url' if index_exists?(:external_issue_links, name: 'idx_external_issue_links_issue_url')
+    remove_index :external_issue_links, name: 'idx_external_issue_links_issue_position' if index_exists?(:external_issue_links, [:issue_id, :position], name: 'idx_external_issue_links_issue_position')
+    remove_index :external_issue_links, name: 'idx_external_issue_links_issue_url' if index_exists?(:external_issue_links, [:issue_id, :url], name: 'idx_external_issue_links_issue_url')
     remove_index :external_issue_links, column: :issue_id if index_exists?(:external_issue_links, :issue_id)
 
     drop_table :external_issue_links if table_exists?(:external_issue_links)

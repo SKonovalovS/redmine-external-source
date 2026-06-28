@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.3.6
+
+### Fixed
+
+- Fixed `index_exists?` usage for Rails 6.1 compatibility.
+- Fixed plugin rollback when checking indexes by name.
+- Improved uninstall flow for Redmine 5.x / Rails 6.1 environments.
+
 ## 1.3.5
 
 ### Fixed

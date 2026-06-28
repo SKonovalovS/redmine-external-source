@@ -50,7 +50,7 @@ class UpgradeExternalIssueLinksToV1 < ActiveRecord::Migration[6.1]
   def down
     return unless table_exists?(:external_issue_links)
 
-    if index_exists?(:external_issue_links, name: 'idx_external_issue_links_issue_position')
+    if index_exists?(:external_issue_links, [:issue_id, :position], name: 'idx_external_issue_links_issue_position')
       remove_index :external_issue_links, name: 'idx_external_issue_links_issue_position'
     end
 
