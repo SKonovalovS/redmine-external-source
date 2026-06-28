@@ -3,6 +3,7 @@ class ExternalIssueLinksController < ApplicationController
 
   before_action :find_issue, only: [:index, :create, :sort]
   before_action :find_external_issue_link, only: [:show, :update, :destroy]
+  before_action :ensure_external_issue_links_table
   before_action :authorize_view_external_issue_links, only: [:index, :show]
   before_action :authorize_manage_external_issue_links, only: [:create, :update, :destroy, :sort]
 
@@ -90,6 +91,15 @@ class ExternalIssueLinksController < ApplicationController
     @issue = @external_issue_link.issue
     @project = @issue.project
   rescue ActiveRecord::RecordNotFound
+    render_404
+  end
+
+
+  def ensure_external_issue_links_table
+    return if ActiveRecord::Base.connection.data_source_exists?('external_issue_links')
+
+    render_404
+  rescue StandardError
     render_404
   end
 

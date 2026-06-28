@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.3.7
+
+### Fixed
+- Added safe table existence checks before rendering the issue hook.
+- Added a safe IssuePatch helper for detecting `external_issue_links` table availability.
+- Prevented `500 Internal Server Error` when plugin migrations are rolled back before the Redmine process is fully restarted.
+- Added controller-level guard for requests when the plugin table is unavailable.
+
 ## 1.3.6
 
 ### Fixed

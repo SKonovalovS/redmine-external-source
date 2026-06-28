@@ -50,6 +50,7 @@ class ExternalIssueLink < ActiveRecord::Base
 
   def set_default_position
     return if position.present? || issue.blank?
+    return unless ActiveRecord::Base.connection.data_source_exists?('external_issue_links')
 
     self.position = (issue.external_issue_links.maximum(:position) || 0) + 1
   end
